@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileApplicationDev.AddTermPage"
+             Title="Add Term">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Add Term"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="termTitleEntry"
+                   Placeholder="Term Title" />
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Start Date:" VerticalTextAlignment="Center" />
+                <DatePicker x:Name="termStartDate"
+                            Format="MM/dd/yyyy" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="End Date:" VerticalTextAlignment="Center" />
+                <DatePicker x:Name="termEndDate"
+                            Format="MM/dd/yyyy" />
+            </HorizontalStackLayout>
+
+            <Label Text="Courses For Term"
+                   FontAttributes="Bold" />
+
+            <Button Text="Add Course"
+                    BackgroundColor="#5B2EFF"
+                    TextColor="White"
+                    Clicked="OnAddCourseClicked" />
+
+            <StackLayout x:Name="courseListLayout" Spacing="10" />
+
+            <Button Text="Add Term"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    Clicked="OnAddTermClicked" />
+
+            <Label Text="Clear"
+                   TextColor="Gray"
+                   FontAttributes="Italic"
+                   HorizontalOptions="End" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+
