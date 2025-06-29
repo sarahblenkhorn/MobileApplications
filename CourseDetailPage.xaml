@@ -1,0 +1,41 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileApplicationDev.CourseDetailPage"
+             Title="Course Details">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <!-- Title and Basic Info -->
+            <Label Text="{Binding CourseTitle}"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding CourseStatus}" />
+            <Label Text="{Binding DateRange}" />
+
+            <Label Text="Assessments"
+                   FontAttributes="Bold"
+                   FontSize="14" />
+
+            <Label Text="Course Instructor Information"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding InstructorName}" />
+            <Label Text="{Binding InstructorEmail}" />
+            <Label Text="{Binding InstructorPhone}" />
+
+            <Label Text="Course Notes"
+                   FontAttributes="Bold" />
+            <Editor Text="{Binding Notes}" IsReadOnly="True" />
+
+            <Button Text="Update Course"
+                    BackgroundColor="#5B2EFF"
+                    TextColor="White"
+                    Clicked="OnUpdateCourseClicked"
+                    CornerRadius="10"
+                    Padding="10"
+                    Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+

@@ -1,26 +1,54 @@
-namespace MobileApplicationDev;
+using System;
+using Microsoft.Maui.Controls;
 
-public partial class UpdateCoursePage : ContentPage
+namespace MobileApplicationDev
 {
-    public UpdateCoursePage(string title = "", DateTime? start = null, DateTime? end = null)
+    public partial class UpdateCoursePage : ContentPage
     {
-        InitializeComponent();
+        public UpdateCoursePage(string courseTitle, DateTime startDate, DateTime endDate)
+        {
+            InitializeComponent();
 
-        // Pre-fill values
-        titleEntry.Text = title;
-        startDatePicker.Date = start ?? DateTime.Now;
-        endDatePicker.Date = end ?? DateTime.Now;
-    }
+            // Set existing course values
+            courseTitleEntry.Text = courseTitle;
+            startDatePicker.Date = startDate;
+            endDatePicker.Date = endDate;
 
-    private async void OnSaveClicked(object sender, EventArgs e)
-    {
-        // TODO: save logic here
-        await DisplayAlert("Saved", "Course updated successfully.", "OK");
-        await Navigation.PopAsync();
-    }
+            // Optional: Pre-fill assessment fields
+            performanceAssessmentEntry.Text = "";
+            performanceDueDatePicker.Date = endDate;
 
-    private async void OnCancelClicked(object sender, EventArgs e)
-    {
-        await Navigation.PopAsync();
+            objectiveAssessmentEntry.Text = "";
+            objectiveDueDatePicker.Date = endDate;
+        }
+
+        private async void OnSaveClicked(object sender, EventArgs e)
+        {
+            // Collect course details
+            string courseTitle = courseTitleEntry.Text;
+            DateTime startDate = startDatePicker.Date;
+            DateTime endDate = endDatePicker.Date;
+
+            // Collect assessments
+            string performanceTitle = performanceAssessmentEntry.Text;
+            DateTime performanceDueDate = performanceDueDatePicker.Date;
+
+            string objectiveTitle = objectiveAssessmentEntry.Text;
+            DateTime objectiveDueDate = objectiveDueDatePicker.Date;
+
+            // (Optional) Do something with the data here...
+
+            await DisplayAlert("Saved", $"Course '{courseTitle}' updated successfully.", "OK");
+            await Navigation.PopAsync();
+        }
+
+        private async void OnCancelClicked(object sender, EventArgs e)
+        {
+            bool confirm = await DisplayAlert("Cancel", "Discard changes?", "Yes", "No");
+            if (confirm)
+            {
+                await Navigation.PopAsync();
+            }
+        }
     }
 }

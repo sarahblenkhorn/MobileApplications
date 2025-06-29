@@ -42,6 +42,63 @@ public partial class AddTermPage : ContentPage
             Format = "MM/dd/yyyy"
         };
 
+        // Performance Assessment
+        var perfLabel = new Label
+        {
+            Text = "Performance Assessment:",
+            FontAttributes = FontAttributes.Bold
+        };
+
+        var perfEntry = new Entry
+        {
+            Placeholder = "Enter title"
+        };
+
+        var perfDueLabel = new Label
+        {
+            Text = "Due Date:"
+        };
+
+        var perfDueDate = new DatePicker
+        {
+            Format = "MM/dd/yyyy"
+        };
+
+        // Objective Assessment
+        var objLabel = new Label
+        {
+            Text = "Objective Assessment:",
+            FontAttributes = FontAttributes.Bold
+        };
+
+        var objEntry = new Entry
+        {
+            Placeholder = "Enter title"
+        };
+
+        var objDueLabel = new Label
+        {
+            Text = "Due Date:"
+        };
+
+        var objDueDate = new DatePicker
+        {
+            Format = "MM/dd/yyyy"
+        };
+
+        // Notes
+        var notesLabel = new Label
+        {
+            Text = "Notes:",
+            FontAttributes = FontAttributes.Bold
+        };
+
+        var notesEditor = new Editor
+        {
+            HeightRequest = 80,
+            Placeholder = "Optional notes"
+        };
+
         var deleteButton = new Button
         {
             Text = "🗑",
@@ -61,6 +118,16 @@ public partial class AddTermPage : ContentPage
             startDatePicker,
             endDateLabel,
             endDatePicker,
+            perfLabel,
+            perfEntry,
+            perfDueLabel,
+            perfDueDate,
+            objLabel,
+            objEntry,
+            objDueLabel,
+            objDueDate,
+            notesLabel,
+            notesEditor,
             deleteButton
         }
         };

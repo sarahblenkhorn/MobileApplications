@@ -1,80 +1,87 @@
-﻿namespace MobileApplicationDev;
+﻿using System;
+using Microsoft.Maui.Controls;
 
-public partial class UpdateTermPage : ContentPage
+namespace MobileApplicationDev
 {
-    public UpdateTermPage()
+    public partial class UpdateTermPage : ContentPage
     {
-        InitializeComponent();
-    }
+        public UpdateTermPage()
+        {
+            InitializeComponent();
+        }
 
+        private void OnAddCourseClicked(object sender, EventArgs e)
+        {
+            var titleLabel = new Label { Text = "Course Title:", FontAttributes = FontAttributes.Bold };
+            var titleEntry = new Entry { Placeholder = "Enter course title" };
 
-    private void OnAddCourseClicked(object sender, EventArgs e)
-    {
-        var courseTitle = new Entry
-        {
-            Placeholder = "Course Title",
-            WidthRequest = 300
-        };
+            var startDateLabel = new Label { Text = "Start Date:", FontAttributes = FontAttributes.Bold };
+            var startDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
 
-        var startDateLabel = new Label
-        {
-            Text = "Start Date:",
-            VerticalTextAlignment = TextAlignment.Center
-        };
-        var startDatePicker = new DatePicker
-        {
-            Format = "MM/dd/yyyy",
-            WidthRequest = 200
-        };
+            var endDateLabel = new Label { Text = "End Date:", FontAttributes = FontAttributes.Bold };
+            var endDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
 
-        var endDateLabel = new Label
-        {
-            Text = "End Date:",
-            VerticalTextAlignment = TextAlignment.Center
-        };
-        var endDatePicker = new DatePicker
-        {
-            Format = "MM/dd/yyyy",
-            WidthRequest = 200
-        };
+            var performanceLabel = new Label { Text = "Performance Assessment:", FontAttributes = FontAttributes.Bold };
+            var performanceEntry = new Entry { Placeholder = "Enter title" };
 
-        var deleteButton = new Button
-        {
-            Text = "🗑",
-            BackgroundColor = Colors.LightGray,
-            WidthRequest = 50,
-            HorizontalOptions = LayoutOptions.End
-        };
+            var performanceDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
+            var performanceDuePicker = new DatePicker { Format = "MM/dd/yyyy" };
 
-        var courseBlock = new Frame
-        {
-            Padding = 10,
-            Margin = new Thickness(0, 5),
-            CornerRadius = 10,
-            BorderColor = Colors.LightGray,
-            Content = new VerticalStackLayout
+            var objectiveLabel = new Label { Text = "Objective Assessment:", FontAttributes = FontAttributes.Bold };
+            var objectiveEntry = new Entry { Placeholder = "Enter title" };
+
+            var objectiveDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
+            var objectiveDuePicker = new DatePicker { Format = "MM/dd/yyyy" };
+
+            var notesLabel = new Label { Text = "Notes:", FontAttributes = FontAttributes.Bold };
+            var notesEditor = new Editor { AutoSize = EditorAutoSizeOption.TextChanges, Placeholder = "Optional notes" };
+
+            var deleteButton = new Button
+            {
+                Text = "🗑",
+                BackgroundColor = Colors.LightGray,
+                WidthRequest = 60,
+                HorizontalOptions = LayoutOptions.End
+            };
+
+            var courseStack = new VerticalStackLayout
             {
                 Spacing = 8,
                 Children =
                 {
-                    courseTitle,
-                    new HorizontalStackLayout { Children = { startDateLabel, startDatePicker } },
-                    new HorizontalStackLayout { Children = { endDateLabel, endDatePicker } },
+                    titleLabel, titleEntry,
+                    startDateLabel, startDatePicker,
+                    endDateLabel, endDatePicker,
+                    performanceLabel, performanceEntry,
+                    performanceDueLabel, performanceDuePicker,
+                    objectiveLabel, objectiveEntry,
+                    objectiveDueLabel, objectiveDuePicker,
+                    notesLabel, notesEditor,
                     deleteButton
                 }
-            }
-        };
+            };
 
-        deleteButton.Clicked += (s, args) =>
+            var courseFrame = new Frame
+            {
+                BorderColor = Colors.Gray,
+                Padding = 10,
+                Margin = new Thickness(0, 10),
+                Content = courseStack
+            };
+
+            deleteButton.Clicked += (s, args) =>
+            {
+                courseListLayout.Children.Remove(courseFrame);
+            };
+
+            courseListLayout.Children.Add(courseFrame);
+        }
+
+        private async void OnSaveClicked(object sender, EventArgs e)
         {
-            courseListLayout.Children.Remove(courseBlock);
-        };
-
-        courseListLayout.Children.Add(courseBlock);
-    }
-
-    private void OnSaveChangesClicked(object sender, EventArgs e)
-    {
-        DisplayAlert("Saved", "Term changes have been saved.", "OK");
+            // Here you'd collect and save the updated term and course details
+            await DisplayAlert("Updated", "Term and courses have been updated.", "OK");
+            await Navigation.PopAsync();
+        }
     }
 }

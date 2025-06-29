@@ -15,16 +15,14 @@
             <Entry x:Name="termTitleEntry"
                    Placeholder="Term Title" />
 
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+            <HorizontalStackLayout Spacing="10">
                 <Label Text="Start Date:" VerticalTextAlignment="Center" />
-                <DatePicker x:Name="termStartDate"
-                            Format="MM/dd/yyyy" />
+                <DatePicker x:Name="termStartDate" Format="MM/dd/yyyy" />
             </HorizontalStackLayout>
 
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+            <HorizontalStackLayout Spacing="10">
                 <Label Text="End Date:" VerticalTextAlignment="Center" />
-                <DatePicker x:Name="termEndDate"
-                            Format="MM/dd/yyyy" />
+                <DatePicker x:Name="termEndDate" Format="MM/dd/yyyy" />
             </HorizontalStackLayout>
 
             <Label Text="Courses For Term"
@@ -40,12 +38,13 @@
             <Button Text="Save Changes"
                     BackgroundColor="Black"
                     TextColor="White"
-                    Clicked="OnSaveChangesClicked" />
+                    Clicked="OnSaveClicked" />
 
             <Label Text="Clear"
                    TextColor="Gray"
                    FontAttributes="Italic"
                    HorizontalOptions="End" />
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
