@@ -1,50 +1,45 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using MobileApplicationDev.Models;
+using MobileApplicationDev.Services;
+using System;
+using System.Collections.ObjectModel;
 
 namespace MobileApplicationDev
 {
     public partial class MainPage : ContentPage
     {
+        private readonly DatabaseService _db;
         public ObservableCollection<Course> Courses { get; set; }
 
-        public MainPage()
+        public MainPage(DatabaseService db)
         {
             InitializeComponent();
-
-            Courses = new ObservableCollection<Course>
-            {
-                new Course
-                {
-                    CourseTitle = "C# Programming",
-                    CourseStatus = "In Progress",
-                    StartDate = new DateTime(2025, 6, 1),
-                    EndDate = new DateTime(2025, 9, 1),
-                    InstructorName = "Dr. Jane Doe",
-                    InstructorEmail = "jane@example.com",
-                    InstructorPhone = "555-1234",
-                    Notes = "Covering advanced topics"
-                },
-                new Course
-                {
-                    CourseTitle = "Databases 101",
-                    CourseStatus = "Planned",
-                    StartDate = new DateTime(2025, 9, 15),
-                    EndDate = new DateTime(2025, 12, 15),
-                    InstructorName = "John Smith",
-                    InstructorEmail = "john@example.com",
-                    InstructorPhone = "555-5678",
-                    Notes = "Start with normalization"
-                }
-            };
-
+            _db = db;
+            Courses = new ObservableCollection<Course>();
             BindingContext = this;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            Courses.Clear();
+            var allTerms = await _db.GetTermsAsync();
+
+            foreach (var term in allTerms)
+            {
+                var courses = await _db.GetCoursesForTermAsync(term.Id);
+                foreach (var course in courses)
+                {
+                    Courses.Add(course);
+                }
+            }
         }
 
         private async void OnAddButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddTermPage());
+            var addTermPage = App.Services.GetService<AddTermPage>();
+            await Navigation.PushAsync(addTermPage);
         }
 
         private async void OnUpdateTermTapped(object sender, EventArgs e)
@@ -64,6 +59,7 @@ namespace MobileApplicationDev
         }
     }
 }
+
 
 
 

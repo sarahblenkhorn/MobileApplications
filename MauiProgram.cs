@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MobileApplicationDev.Services;
 
 namespace MobileApplicationDev
 {
@@ -8,7 +9,7 @@ namespace MobileApplicationDev
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()
+                .UseMauiApp(serviceProvider => new App(serviceProvider))
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -16,10 +17,17 @@ namespace MobileApplicationDev
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddTransient<AddTermPage>();
+            builder.Services.AddTransient<MainPage>();
+
 
             return builder.Build();
         }
     }
 }
+
+

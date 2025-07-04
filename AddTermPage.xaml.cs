@@ -1,10 +1,16 @@
-﻿namespace MobileApplicationDev;
+﻿using MobileApplicationDev.Models;
+using MobileApplicationDev.Services;
+
+namespace MobileApplicationDev;
 
 public partial class AddTermPage : ContentPage
 {
-    public AddTermPage()
+    private readonly DatabaseService _db;
+
+    public AddTermPage(DatabaseService db)
     {
         InitializeComponent();
+        _db = db;
     }
 
     private void OnAddCourseClicked(object sender, EventArgs e)
@@ -149,8 +155,43 @@ public partial class AddTermPage : ContentPage
     }
 
 
-    private void OnAddTermClicked(object sender, EventArgs e)
+    private async void OnAddTermClicked(object sender, EventArgs e)
     {
-        DisplayAlert("Saved", "Term has been added.", "OK");
+        var term = new Term
+        {
+            Title = termTitleEntry.Text,
+            StartDate = termStartDate.Date,
+            EndDate = termEndDate.Date
+        };
+
+        await _db.SaveTermAsync(term);
+
+        foreach (var child in courseListLayout.Children)
+        {
+            if (child is Frame frame && frame.Content is VerticalStackLayout layout)
+            {
+                var titleEntry = layout.Children[1] as Entry;
+                var startDate = (layout.Children[3] as DatePicker)?.Date ?? DateTime.Now;
+                var endDate = (layout.Children[5] as DatePicker)?.Date ?? DateTime.Now;
+                var notesEditor = layout.Children[15] as Editor;
+
+                var course = new Course
+                {
+                    CourseTitle = titleEntry?.Text ?? "Untitled",
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Notes = notesEditor?.Text ?? "",
+                    TermId = term.Id
+                };
+
+                await _db.SaveCourseAsync(course);
+
+                // Optional: handle assessments using layout.Children[7]–[13]
+            }
+        }
+
+        await DisplayAlert("Saved", "Term and courses have been saved.", "OK");
+        await Navigation.PopAsync();
     }
 }
+
