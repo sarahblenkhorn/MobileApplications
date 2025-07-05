@@ -2,20 +2,22 @@
 using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace MobileApplicationDev
 {
     public partial class MainPage : ContentPage
     {
         private readonly DatabaseService _db;
-        public ObservableCollection<Course> Courses { get; set; }
+
+        public ObservableCollection<TermDisplay> Terms { get; set; } = new();
 
         public MainPage(DatabaseService db)
         {
             InitializeComponent();
             _db = db;
-            Courses = new ObservableCollection<Course>();
             BindingContext = this;
         }
 
@@ -23,16 +25,22 @@ namespace MobileApplicationDev
         {
             base.OnAppearing();
 
-            Courses.Clear();
+            Terms.Clear();
+
             var allTerms = await _db.GetTermsAsync();
 
             foreach (var term in allTerms)
             {
                 var courses = await _db.GetCoursesForTermAsync(term.Id);
-                foreach (var course in courses)
+
+                Terms.Add(new TermDisplay
                 {
-                    Courses.Add(course);
-                }
+                    Title = term.Title,
+                    StartDateText = term.StartDate.ToString("MMM dd"),
+                    EndDateText = term.EndDate.ToString("MMM dd"),
+                    Courses = courses,
+                    TermObject = term
+                });
             }
         }
 
@@ -51,14 +59,36 @@ namespace MobileApplicationDev
         {
             if (sender is VisualElement view && view.BindingContext is Course course)
             {
-                await Navigation.PushAsync(new CourseDetailPage
+                var courseDetailPage = new CourseDetailPage
                 {
                     BindingContext = course
-                });
+                };
+
+                await Navigation.PushAsync(courseDetailPage);
             }
         }
+
+        private async void OnDeleteTermTapped(object sender, EventArgs e)
+        {
+            if (sender is Label label && label.BindingContext is TermDisplay termDisplay)
+            {
+                bool confirm = await DisplayAlert("Delete Term", $"Are you sure you want to delete \"{termDisplay.Title}\"?", "Yes", "Cancel");
+                if (!confirm) return;
+
+                var courses = await _db.GetCoursesForTermAsync(termDisplay.TermObject.Id);
+                foreach (var course in courses)
+                {
+                    await _db.DeleteCourseAsync(course);
+                }
+
+                await _db.DeleteTermAsync(termDisplay.TermObject);
+                OnAppearing(); // refresh UI
+            }
+        }
+
     }
 }
+
 
 
 

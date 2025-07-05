@@ -38,83 +38,96 @@
                         VerticalOptions="Center" />
             </Grid>
 
-            <!-- Term Card -->
-            <Frame CornerRadius="10"
-                   Padding="15"
-                   Margin="10"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   HorizontalOptions="Center"
-                   WidthRequest="350">
+            <!-- Terms List -->
+            <CollectionView ItemsSource="{Binding Terms}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="10"
+                               Padding="15"
+                               Margin="10"
+                               BackgroundColor="White"
+                               HasShadow="True"
+                               WidthRequest="350">
 
-                <VerticalStackLayout Spacing="10">
+                            <VerticalStackLayout Spacing="10">
 
-                    <!-- Update Term Link -->
-                    <Label Text="Update"
-                           FontSize="12"
-                           TextColor="#5B2EFF"
-                           TextDecorations="Underline"
-                           HorizontalOptions="End"
-                           VerticalOptions="Start">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnUpdateTermTapped" />
-                        </Label.GestureRecognizers>
-                    </Label>
+                                <!-- Update + Delete Links -->
+                                <HorizontalStackLayout HorizontalOptions="End" Spacing="15">
+                                    <Label Text="Update"
+                                           FontSize="12"
+                                           TextColor="#5B2EFF"
+                                           TextDecorations="Underline"
+                                           VerticalOptions="Center">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnUpdateTermTapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
 
-                    <!-- Term Info -->
-                    <Label Text="Term Title"
-                           FontAttributes="Bold"
-                           FontSize="20"
-                           HorizontalOptions="Center" />
+                                    <Label Text="Delete"
+                                           FontSize="12"
+                                           TextColor="#5B2EFF"
+                                           TextDecorations="Underline"
+                                           VerticalOptions="Center"
+                                           BindingContext="{Binding}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnDeleteTermTapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </HorizontalStackLayout>
 
-                    <HorizontalStackLayout HorizontalOptions="Center"
-                                           Spacing="10">
-                        <Label Text="Start:" FontAttributes="Bold" />
-                        <Label Text="Term Start Date" />
-                        <Label Text="End:" FontAttributes="Bold" />
-                        <Label Text="Term End Date" />
-                    </HorizontalStackLayout>
+                                <!-- Term Title -->
+                                <Label Text="{Binding Title}"
+                                       FontAttributes="Bold"
+                                       FontSize="20"
+                                       HorizontalOptions="Center" />
 
-                    <Label Text="My Courses"
-                           FontAttributes="Bold"
-                           FontSize="16"
-                           HorizontalOptions="Center"
-                           Margin="0,10,0,5" />
+                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Start: " FontAttributes="Bold" />
+                                                <Span Text="{Binding StartDateText}" />
+                                                <Span Text="   End: " FontAttributes="Bold" />
+                                                <Span Text="{Binding EndDateText}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </HorizontalStackLayout>
 
-                    <!-- Course List -->
-                    <CollectionView ItemsSource="{Binding Courses}"
-                                    SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <!-- Entire Frame is tappable -->
-                                <Frame CornerRadius="10"
-                                       BackgroundColor="#5B2EFF"
-                                       Padding="10"
-                                       WidthRequest="250"
-                                       HasShadow="False">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnCourseTapped" />
-                                    </Frame.GestureRecognizers>
+                                <!-- Courses Header -->
+                                <Label Text="My Courses"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       HorizontalOptions="Center"
+                                       Margin="0,10,0,5" />
 
-                                    <VerticalStackLayout Spacing="5">
-                                        <Label Text="{Binding CourseTitle}"
-                                               FontSize="14"
-                                               TextColor="White"
-                                               HorizontalOptions="Center" />
-                                        <Label Text="{Binding DateRange}"
-                                               FontSize="12"
-                                               TextColor="White"
-                                               HorizontalOptions="Center" />
-                                    </VerticalStackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </Frame>
+                                <!-- Courses -->
+                                <CollectionView ItemsSource="{Binding Courses}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Text="{Binding CourseTitle}"
+                                                BackgroundColor="#5B2EFF"
+                                                TextColor="White"
+                                                CornerRadius="10"
+                                                Margin="0,5"
+                                                Clicked="OnCourseTapped"
+                                                CommandParameter="{Binding .}" />       
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
+
+
 
 
 

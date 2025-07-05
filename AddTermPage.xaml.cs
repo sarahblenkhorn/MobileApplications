@@ -92,6 +92,41 @@ public partial class AddTermPage : ContentPage
             Format = "MM/dd/yyyy"
         };
 
+        // Instructor Name
+        var instructorNameLabel = new Label
+        {
+            Text = "Instructor Name:",
+            FontAttributes = FontAttributes.Bold
+        };
+        var instructorNameEntry = new Entry
+        {
+            Placeholder = "Enter name"
+        };
+
+        // Instructor Email
+        var instructorEmailLabel = new Label
+        {
+            Text = "Instructor Email:",
+            FontAttributes = FontAttributes.Bold
+        };
+        var instructorEmailEntry = new Entry
+        {
+            Placeholder = "Enter email",
+            Keyboard = Keyboard.Email
+        };
+
+        // Instructor Phone
+        var instructorPhoneLabel = new Label
+        {
+            Text = "Instructor Phone:",
+            FontAttributes = FontAttributes.Bold
+        };
+        var instructorPhoneEntry = new Entry
+        {
+            Placeholder = "Enter phone",
+            Keyboard = Keyboard.Telephone
+        };
+
         // Notes
         var notesLabel = new Label
         {
@@ -132,11 +167,22 @@ public partial class AddTermPage : ContentPage
             objEntry,
             objDueLabel,
             objDueDate,
+
+            // 👇 Add instructor fields here
+            instructorNameLabel,
+            instructorNameEntry,
+            instructorEmailLabel,
+            instructorEmailEntry,
+            instructorPhoneLabel,
+            instructorPhoneEntry,
+
             notesLabel,
             notesEditor,
             deleteButton
         }
+
         };
+
 
         var courseFrame = new Frame
         {
@@ -180,9 +226,13 @@ public partial class AddTermPage : ContentPage
                     CourseTitle = titleEntry?.Text ?? "Untitled",
                     StartDate = startDate,
                     EndDate = endDate,
+                    InstructorName = (layout.Children[11] as Entry)?.Text ?? "",
+                    InstructorEmail = (layout.Children[13] as Entry)?.Text ?? "",
+                    InstructorPhone = (layout.Children[15] as Entry)?.Text ?? "",
                     Notes = notesEditor?.Text ?? "",
                     TermId = term.Id
                 };
+
 
                 await _db.SaveCourseAsync(course);
 
