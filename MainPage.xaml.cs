@@ -2,7 +2,6 @@
 using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -24,7 +23,11 @@ namespace MobileApplicationDev
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            await LoadTermsAsync();
+        }
 
+        private async Task LoadTermsAsync()
+        {
             Terms.Clear();
 
             var allTerms = await _db.GetTermsAsync();
@@ -52,14 +55,21 @@ namespace MobileApplicationDev
 
         private async void OnUpdateTermTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new UpdateTermPage());
+            if (sender is Label label && label.BindingContext is TermDisplay termDisplay)
+            {
+                await Navigation.PushAsync(new UpdateTermPage(termDisplay.TermObject, _db));
+            }
         }
+
 
         private async void OnCourseTapped(object sender, EventArgs e)
         {
             if (sender is VisualElement view && view.BindingContext is Course course)
             {
-                var courseDetailPage = new CourseDetailPage
+                var assessments = await _db.GetAssessmentsForCourseAsync(course.Id);
+                course.Assessments = assessments;
+
+                var courseDetailPage = new CourseDetailPage(_db)
                 {
                     BindingContext = course
                 };
@@ -67,6 +77,7 @@ namespace MobileApplicationDev
                 await Navigation.PushAsync(courseDetailPage);
             }
         }
+
 
         private async void OnDeleteTermTapped(object sender, EventArgs e)
         {
@@ -76,18 +87,27 @@ namespace MobileApplicationDev
                 if (!confirm) return;
 
                 var courses = await _db.GetCoursesForTermAsync(termDisplay.TermObject.Id);
+
                 foreach (var course in courses)
                 {
+                    // Delete related assessments first (optional: if your db schema requires)
+                    var assessments = await _db.GetAssessmentsForCourseAsync(course.Id);
+                    foreach (var assessment in assessments)
+                    {
+                        await _db.DeleteAssessmentAsync(assessment);
+                    }
+
                     await _db.DeleteCourseAsync(course);
                 }
 
                 await _db.DeleteTermAsync(termDisplay.TermObject);
-                OnAppearing(); // refresh UI
+
+                await LoadTermsAsync(); // Refresh terms list
             }
         }
-
     }
 }
+
 
 
 

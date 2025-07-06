@@ -14,6 +14,19 @@
             <Label Text="Course Title:" FontAttributes="Bold" />
             <Entry x:Name="courseTitleEntry" Placeholder="Course Title" />
 
+            <Label Text="Course Status:" FontAttributes="Bold" />
+            <Picker x:Name="statusPicker"
+                    Title="Select Status">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>In Progress</x:String>
+                        <x:String>Completed</x:String>
+                        <x:String>Dropped</x:String>
+                        <x:String>Plan to Take</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
             <Label Text="Start Date:" FontAttributes="Bold" />
             <DatePicker x:Name="startDatePicker" Format="MM/dd/yyyy" />
 
@@ -32,7 +45,21 @@
             <Label Text="Due Date:" FontAttributes="Bold" />
             <DatePicker x:Name="objectiveDueDatePicker" Format="MM/dd/yyyy" />
 
-            <!-- Save & Cancel -->
+            <!-- Instructor Info -->
+            <Label Text="Instructor Name:" FontAttributes="Bold" />
+            <Entry x:Name="instructorNameEntry" Placeholder="Instructor Name" />
+
+            <Label Text="Instructor Email:" FontAttributes="Bold" />
+            <Entry x:Name="instructorEmailEntry" Placeholder="Instructor Email" Keyboard="Email" />
+
+            <Label Text="Instructor Phone:" FontAttributes="Bold" />
+            <Entry x:Name="instructorPhoneEntry" Placeholder="Instructor Phone" Keyboard="Telephone" />
+
+            <!-- Notes -->
+            <Label Text="Notes:" FontAttributes="Bold" />
+            <Editor x:Name="notesEditor" HeightRequest="80" />
+
+            <!-- Buttons -->
             <Button Text="Save Changes"
                     BackgroundColor="Black"
                     TextColor="White"
@@ -45,4 +72,3 @@
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
-

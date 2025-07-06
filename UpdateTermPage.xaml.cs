@@ -1,87 +1,46 @@
 ﻿using System;
 using Microsoft.Maui.Controls;
+using MobileApplicationDev.Models;
+using MobileApplicationDev.Services;
 
 namespace MobileApplicationDev
 {
     public partial class UpdateTermPage : ContentPage
     {
-        public UpdateTermPage()
+        private readonly Term _term;
+        private readonly DatabaseService _db;
+
+        public UpdateTermPage(Term term, DatabaseService db)
         {
             InitializeComponent();
-        }
+            _term = term;
+            _db = db;
 
-        private void OnAddCourseClicked(object sender, EventArgs e)
-        {
-            var titleLabel = new Label { Text = "Course Title:", FontAttributes = FontAttributes.Bold };
-            var titleEntry = new Entry { Placeholder = "Enter course title" };
-
-            var startDateLabel = new Label { Text = "Start Date:", FontAttributes = FontAttributes.Bold };
-            var startDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
-
-            var endDateLabel = new Label { Text = "End Date:", FontAttributes = FontAttributes.Bold };
-            var endDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
-
-            var performanceLabel = new Label { Text = "Performance Assessment:", FontAttributes = FontAttributes.Bold };
-            var performanceEntry = new Entry { Placeholder = "Enter title" };
-
-            var performanceDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
-            var performanceDuePicker = new DatePicker { Format = "MM/dd/yyyy" };
-
-            var objectiveLabel = new Label { Text = "Objective Assessment:", FontAttributes = FontAttributes.Bold };
-            var objectiveEntry = new Entry { Placeholder = "Enter title" };
-
-            var objectiveDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
-            var objectiveDuePicker = new DatePicker { Format = "MM/dd/yyyy" };
-
-            var notesLabel = new Label { Text = "Notes:", FontAttributes = FontAttributes.Bold };
-            var notesEditor = new Editor { AutoSize = EditorAutoSizeOption.TextChanges, Placeholder = "Optional notes" };
-
-            var deleteButton = new Button
-            {
-                Text = "🗑",
-                BackgroundColor = Colors.LightGray,
-                WidthRequest = 60,
-                HorizontalOptions = LayoutOptions.End
-            };
-
-            var courseStack = new VerticalStackLayout
-            {
-                Spacing = 8,
-                Children =
-                {
-                    titleLabel, titleEntry,
-                    startDateLabel, startDatePicker,
-                    endDateLabel, endDatePicker,
-                    performanceLabel, performanceEntry,
-                    performanceDueLabel, performanceDuePicker,
-                    objectiveLabel, objectiveEntry,
-                    objectiveDueLabel, objectiveDuePicker,
-                    notesLabel, notesEditor,
-                    deleteButton
-                }
-            };
-
-            var courseFrame = new Frame
-            {
-                BorderColor = Colors.Gray,
-                Padding = 10,
-                Margin = new Thickness(0, 10),
-                Content = courseStack
-            };
-
-            deleteButton.Clicked += (s, args) =>
-            {
-                courseListLayout.Children.Remove(courseFrame);
-            };
-
-            courseListLayout.Children.Add(courseFrame);
+            // Populate UI with term data
+            termTitleEntry.Text = _term.Title;
+            termStartDate.Date = _term.StartDate;
+            termEndDate.Date = _term.EndDate;
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            // Here you'd collect and save the updated term and course details
-            await DisplayAlert("Updated", "Term and courses have been updated.", "OK");
+            // Validate and update term data
+            _term.Title = termTitleEntry.Text?.Trim() ?? "Untitled Term";
+            _term.StartDate = termStartDate.Date;
+            _term.EndDate = termEndDate.Date;
+
+            await _db.SaveTermAsync(_term);
+            await DisplayAlert("Saved", "Term updated successfully.", "OK");
             await Navigation.PopAsync();
+        }
+
+        private async void OnCancelClicked(object sender, EventArgs e)
+        {
+            bool confirm = await DisplayAlert("Cancel", "Discard changes?", "Yes", "No");
+            if (confirm)
+            {
+                await Navigation.PopAsync();
+            }
         }
     }
 }
