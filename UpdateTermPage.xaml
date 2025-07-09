@@ -7,45 +7,103 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
+            <!-- Page Title -->
             <Label Text="Update Term"
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <Entry x:Name="termTitleEntry" Placeholder="Term Title" />
-            <DatePicker x:Name="termStartDate" />
-            <DatePicker x:Name="termEndDate" />
+            <!-- Term Title -->
+            <Entry x:Name="termTitleEntry"
+                   Placeholder="Term Title" />
+
+            <!-- Start Date -->
+            <Label Text="Term Start Date" />
+            <DatePicker x:Name="termStartDate"
+                        Format="MM/dd/yyyy" />
+
+            <!-- End Date -->
+            <Label Text="Term End Date" />
+            <DatePicker x:Name="termEndDate"
+                        Format="MM/dd/yyyy" />
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="Courses For Term:"
+           FontAttributes="Bold"
+           VerticalOptions="Center"
+           Grid.Column="0" />
+
+                <Button Text="+"
+            WidthRequest="30"
+            HeightRequest="30"
+            FontSize="16"
+            BackgroundColor="#5B2EFF"
+            TextColor="White"
+            CornerRadius="15"
+            Clicked="OnAddCourseClicked"
+            HorizontalOptions="End"
+            VerticalOptions="Center"
+            Grid.Column="1" />
+            </Grid>
+
+            <CollectionView x:Name="courseListView"
+                Margin="0,10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#5B2EFF"
+                   CornerRadius="10"
+                   Padding="10"
+                   Margin="0,5">
+                            <Grid ColumnDefinitions="*,Auto"
+                      VerticalOptions="Center">
+
+                                <!-- 🔗 Clickable Course Title -->
+                                <Label Text="{Binding CourseTitle}"
+                           FontSize="16"
+                           TextColor="White"
+                           VerticalOptions="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCourseTapped"
+                                                  CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                                <!-- 🗑️ Delete Button -->
+                                <Button Text="🗑"
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="14"
+                            Clicked="OnDeleteCourseClicked"
+                            CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
 
-            <HorizontalStackLayout Spacing="10">
-                <Label Text="Start Date:" VerticalTextAlignment="Center" />
-                <DatePicker x:Name="termStartDate" Format="MM/dd/yyyy" />
-            </HorizontalStackLayout>
+            <!-- Dynamic Course List -->
+            <StackLayout x:Name="courseListLayout"
+                         Spacing="10" />
 
-            <HorizontalStackLayout Spacing="10">
-                <Label Text="End Date:" VerticalTextAlignment="Center" />
-                <DatePicker x:Name="termEndDate" Format="MM/dd/yyyy" />
-            </HorizontalStackLayout>
-
-            <Label Text="Courses For Term"
-                   FontAttributes="Bold" />
-
-            <Button Text="Add Course"
-                    BackgroundColor="#5B2EFF"
-                    TextColor="White"
-                    Clicked="OnAddCourseClicked" />
-
-            <StackLayout x:Name="courseListLayout" Spacing="10" />
-
-            <Button Text="Save Changes"
+            <!-- Save Button -->
+            <Button Text="Update Term"
                     BackgroundColor="Black"
                     TextColor="White"
-                    Clicked="OnSaveClicked" />
+                    FontAttributes="Bold"
+                    Clicked="OnSaveClicked"
+                    Margin="0,20,0,0" />
 
+            <!-- Clear Text -->
             <Label Text="Clear"
                    TextColor="Gray"
                    FontAttributes="Italic"
-                   HorizontalOptions="End" />
+                   HorizontalOptions="End">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCancelClicked" />
+                </Label.GestureRecognizers>
+            </Label>
 
         </VerticalStackLayout>
     </ScrollView>

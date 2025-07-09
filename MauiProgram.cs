@@ -21,9 +21,7 @@ namespace MobileApplicationDev
 #endif
 
             builder.Services.AddSingleton<DatabaseService>();
-            builder.Services.AddTransient<AddTermPage>();
             builder.Services.AddTransient<MainPage>();
-
 
             return builder.Build();
         }

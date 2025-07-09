@@ -49,7 +49,7 @@ namespace MobileApplicationDev
 
         private async void OnAddButtonClicked(object sender, EventArgs e)
         {
-            var addTermPage = App.Services.GetService<AddTermPage>();
+            var addTermPage = new AddTermPage(_db);
             await Navigation.PushAsync(addTermPage);
         }
 

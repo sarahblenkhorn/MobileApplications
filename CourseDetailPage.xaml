@@ -71,7 +71,7 @@
 
             <!-- Update Button -->
             <Button Text="Update Course"
-                    BackgroundColor="#5B2EFF"
+                    BackgroundColor= "Black"
                     TextColor="White"
                     Clicked="OnUpdateCourseClicked"
                     CornerRadius="10"

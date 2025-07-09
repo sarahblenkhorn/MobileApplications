@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileApplicationDev.AddCoursePage"
+             Title="Add Course">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Add New Course"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="courseTitleEntry"
+                   Placeholder="Course Title" />
+
+            <Picker x:Name="statusPicker"
+                    Title="Select Status">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Planned</x:String>
+                        <x:String>In Progress</x:String>
+                        <x:String>Completed</x:String>
+                        <x:String>Dropped</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Label Text="Start Date:" />
+            <DatePicker x:Name="startDatePicker" />
+
+            <Label Text="End Date:" />
+            <DatePicker x:Name="endDatePicker" />
+
+            <Label Text="Performance Assessment:" />
+            <Entry x:Name="performanceTitleEntry" Placeholder="Enter title" />
+
+            <Label Text="Due Date:" />
+            <DatePicker x:Name="performanceDueDatePicker" />
+
+            <Label Text="Objective Assessment:" />
+            <Entry x:Name="objectiveTitleEntry" Placeholder="Enter title" />
+
+            <Label Text="Due Date:" />
+            <DatePicker x:Name="objectiveDueDatePicker" />
+
+            <Label Text="Instructor Name:" />
+            <Entry x:Name="instructorNameEntry" Placeholder="Enter name" />
+
+            <Label Text="Instructor Email:" />
+            <Entry x:Name="instructorEmailEntry" Placeholder="Enter email" />
+
+            <Label Text="Instructor Phone:" />
+            <Entry x:Name="instructorPhoneEntry" Placeholder="Enter phone" />
+
+            <Label Text="Notes:" />
+            <Editor x:Name="notesEditor" Placeholder="Optional notes" AutoSize="TextChanges" />
+
+            <Button Text="Save Course"
+                    Clicked="OnSaveCourseClicked"
+                    BackgroundColor="Black"
+                    TextColor="White" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+
+

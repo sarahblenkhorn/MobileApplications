@@ -6,11 +6,13 @@ namespace MobileApplicationDev;
 public partial class AddTermPage : ContentPage
 {
     private readonly DatabaseService _db;
+    private Term _term;
 
-    public AddTermPage(DatabaseService db)
+    public AddTermPage(DatabaseService db, Term? existingTerm = null)
     {
         InitializeComponent();
         _db = db;
+        _term = existingTerm ?? new Term();
     }
 
     private void OnAddCourseClicked(object sender, EventArgs e)
@@ -18,18 +20,12 @@ public partial class AddTermPage : ContentPage
         var titleLabel = new Label { Text = "Course Title:", FontAttributes = FontAttributes.Bold };
         var titleEntry = new Entry { Placeholder = "Enter course title" };
 
-        var statusLabel = new Label
-        {
-            Text = "Course Status:",
-            FontAttributes = FontAttributes.Bold
-        };
-
+        var statusLabel = new Label { Text = "Course Status:", FontAttributes = FontAttributes.Bold };
         var statusPicker = new Picker
         {
             Title = "Select Status",
             ItemsSource = new List<string> { "In Progress", "Completed", "Dropped", "Plan to Take" }
         };
-
 
         var startDateLabel = new Label { Text = "Start Date:", FontAttributes = FontAttributes.Bold };
         var startDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
@@ -135,7 +131,6 @@ public partial class AddTermPage : ContentPage
                 var instructorPhoneEntry = layout.Children[21] as Entry;
                 var notesEditor = layout.Children[23] as Editor;
 
-
                 string email = instructorEmailEntry?.Text?.Trim() ?? "";
                 if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
                 {
@@ -163,10 +158,8 @@ public partial class AddTermPage : ContentPage
                     TermId = term.Id
                 };
 
-
                 await _db.SaveCourseAsync(course);
 
-                // ✅ Save assessments with Type
                 if (!string.IsNullOrWhiteSpace(perfTitle))
                 {
                     await _db.SaveAssessmentAsync(new Assessment
