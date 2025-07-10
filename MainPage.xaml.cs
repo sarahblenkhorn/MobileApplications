@@ -1,6 +1,7 @@
 ﻿using Microsoft.Maui.Controls;
 using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
+using Plugin.LocalNotification;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -24,7 +25,53 @@ namespace MobileApplicationDev
         {
             base.OnAppearing();
             await LoadTermsAsync();
+
+#if ANDROID || IOS
+            var allTerms = await _db.GetTermsAsync();
+
+            foreach (var term in allTerms)
+            {
+                var courses = await _db.GetCoursesForTermAsync(term.Id);
+
+                foreach (var course in courses)
+                {
+                    // Simulate immediate trigger for testing
+                    var now = DateTime.Now;
+
+                    if (course.StartDate.Date == now.Date)
+                    {
+                        var startNotification = new NotificationRequest
+                        {
+                            NotificationId = course.Id + 1000, // Unique ID
+                            Title = $"Course Starting: {course.CourseTitle}",
+                            Description = $"Your course '{course.CourseTitle}' starts today.",
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = now.AddSeconds(3) // For demo: pop up 3 sec later
+                            }
+                        };
+                        Plugin.LocalNotification.LocalNotificationCenter.Current.Show(startNotification);
+                    }
+
+                    if (course.EndDate.Date == now.Date)
+                    {
+                        var endNotification = new NotificationRequest
+                        {
+                            NotificationId = course.Id + 2000, // Unique ID
+                            Title = $"Course Ending: {course.CourseTitle}",
+                            Description = $"Your course '{course.CourseTitle}' ends today.",
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = now.AddSeconds(5) // For demo: pop up 5 sec later
+                            }
+                        };
+                        Plugin.LocalNotification.LocalNotificationCenter.Current.Show(endNotification);
+                    }
+                }
+            }
+#endif
         }
+
 
         private async Task LoadTermsAsync()
         {
@@ -61,7 +108,6 @@ namespace MobileApplicationDev
             }
         }
 
-
         private async void OnCourseTapped(object sender, EventArgs e)
         {
             if (sender is VisualElement view && view.BindingContext is Course course)
@@ -78,7 +124,6 @@ namespace MobileApplicationDev
             }
         }
 
-
         private async void OnDeleteTermTapped(object sender, EventArgs e)
         {
             if (sender is Label label && label.BindingContext is TermDisplay termDisplay)
@@ -90,7 +135,6 @@ namespace MobileApplicationDev
 
                 foreach (var course in courses)
                 {
-                    // Delete related assessments first (optional: if your db schema requires)
                     var assessments = await _db.GetAssessmentsForCourseAsync(course.Id);
                     foreach (var assessment in assessments)
                     {
@@ -101,18 +145,8 @@ namespace MobileApplicationDev
                 }
 
                 await _db.DeleteTermAsync(termDisplay.TermObject);
-
-                await LoadTermsAsync(); // Refresh terms list
+                await LoadTermsAsync();
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-

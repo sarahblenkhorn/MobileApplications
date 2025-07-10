@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Maui.Controls;
 using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace MobileApplicationDev
 {
@@ -34,6 +35,22 @@ namespace MobileApplicationDev
                     // Re-bind the updated course to refresh the UI
                     BindingContext = updatedCourse;
                 }
+            }
+        }
+
+        private async void OnShareNotesClicked(object sender, EventArgs e)
+        {
+            if (BindingContext is Course course && !string.IsNullOrWhiteSpace(course.Notes))
+            {
+                await Share.Default.RequestAsync(new ShareTextRequest
+                {
+                    Title = $"Share Notes for {course.CourseTitle}",
+                    Text = course.Notes
+                });
+            }
+            else
+            {
+                await DisplayAlert("No Notes", "There are no notes to share for this course.", "OK");
             }
         }
 
