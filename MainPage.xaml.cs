@@ -5,6 +5,15 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
+#if ANDROID
+using Android;
+using Android.Content.PM;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
+using Microsoft.Maui.ApplicationModel;
+#endif
+
+
 namespace MobileApplicationDev
 {
     public partial class MainPage : ContentPage
@@ -24,7 +33,58 @@ namespace MobileApplicationDev
         {
             base.OnAppearing();
             await LoadTermsAsync();
+
+#if ANDROID
+    // Request POST_NOTIFICATIONS permission at runtime if needed
+    if (ContextCompat.CheckSelfPermission(Android.App.Application.Context, Manifest.Permission.PostNotifications) != Permission.Granted)
+    {
+        var activity = Platform.CurrentActivity;
+        ActivityCompat.RequestPermissions(activity, new[] { Manifest.Permission.PostNotifications }, 0);
+    }
+
+    var allTerms = await _db.GetTermsAsync();
+
+    foreach (var term in allTerms)
+    {
+        var courses = await _db.GetCoursesForTermAsync(term.Id);
+
+        foreach (var course in courses)
+        {
+            var now = DateTime.Now;
+
+            if (course.StartDate.Date == now.Date)
+            {
+                var builder = new AndroidX.Core.App.NotificationCompat.Builder(Android.App.Application.Context, "default")
+                    .SetContentTitle($"Course Starting: {course.CourseTitle}")
+                    .SetContentText($"Your course '{course.CourseTitle}' starts today!")
+                    .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo) // ✅ Uses built-in icon
+                    .SetPriority((int)NotificationCompat.PriorityHigh);
+
+
+                AndroidX.Core.App.NotificationManagerCompat
+                    .From(Android.App.Application.Context)
+                    .Notify(course.Id + 1000, builder.Build());
+            }
+
+            if (course.EndDate.Date == now.Date)
+            {
+                var builder = new AndroidX.Core.App.NotificationCompat.Builder(Android.App.Application.Context, "default")
+                    .SetContentTitle($"Course Ending: {course.CourseTitle}")
+                    .SetContentText($"Your course '{course.CourseTitle}' ends today!")
+                    .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo) // ✅ Uses built-in icon
+                    .SetPriority((int)NotificationCompat.PriorityHigh);
+
+
+                AndroidX.Core.App.NotificationManagerCompat
+                    .From(Android.App.Application.Context)
+                    .Notify(course.Id + 2000, builder.Build());
+            }
         }
+    }
+#endif
+        }
+
+
 
         private async Task LoadTermsAsync()
         {
@@ -61,7 +121,6 @@ namespace MobileApplicationDev
             }
         }
 
-
         private async void OnCourseTapped(object sender, EventArgs e)
         {
             if (sender is VisualElement view && view.BindingContext is Course course)
@@ -78,7 +137,6 @@ namespace MobileApplicationDev
             }
         }
 
-
         private async void OnDeleteTermTapped(object sender, EventArgs e)
         {
             if (sender is Label label && label.BindingContext is TermDisplay termDisplay)
@@ -90,7 +148,6 @@ namespace MobileApplicationDev
 
                 foreach (var course in courses)
                 {
-                    // Delete related assessments first (optional: if your db schema requires)
                     var assessments = await _db.GetAssessmentsForCourseAsync(course.Id);
                     foreach (var assessment in assessments)
                     {
@@ -101,18 +158,9 @@ namespace MobileApplicationDev
                 }
 
                 await _db.DeleteTermAsync(termDisplay.TermObject);
-
-                await LoadTermsAsync(); // Refresh terms list
+                await LoadTermsAsync();
             }
         }
     }
 }
-
-
-
-
-
-
-
-
 
