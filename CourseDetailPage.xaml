@@ -69,6 +69,14 @@
                     BackgroundColor="#F5F5F5"
                     AutoSize="TextChanges" />
 
+            <Button 
+                    Text="Share Notes"
+                    Clicked="OnShareNotesClicked"
+                    BackgroundColor="DarkSlateBlue"
+                    TextColor="White"
+                    Padding="10"
+                    Margin="0,10,0,0" />
+
             <!-- Update Button -->
             <Button Text="Update Course"
                     BackgroundColor= "Black"

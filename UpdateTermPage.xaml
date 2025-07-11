@@ -13,19 +13,24 @@
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <!-- Term Title -->
+            <Label Text="Term Title"
+       FontAttributes="Bold"
+       FontSize="16" />
+
             <Entry x:Name="termTitleEntry"
-                   Placeholder="Term Title" />
+       Text="{Binding TermTitle}" 
+       Placeholder="Enter term name" />
 
-            <!-- Start Date -->
-            <Label Text="Term Start Date" />
+            <Label Text="Term Start Date"
+           FontAttributes="Bold" />
             <DatePicker x:Name="termStartDate"
-                        Format="MM/dd/yyyy" />
+                Format="MM/dd/yyyy" />
 
-            <!-- End Date -->
-            <Label Text="Term End Date" />
+            <!-- Term End Date -->
+            <Label Text="Term End Date"
+           FontAttributes="Bold" />
             <DatePicker x:Name="termEndDate"
-                        Format="MM/dd/yyyy" />
+                Format="MM/dd/yyyy" />
 
             <Grid ColumnDefinitions="Auto,*">
                 <Label Text="Courses For Term:"
@@ -57,7 +62,6 @@
                             <Grid ColumnDefinitions="*,Auto"
                       VerticalOptions="Center">
 
-                                <!-- 🔗 Clickable Course Title -->
                                 <Label Text="{Binding CourseTitle}"
                            FontSize="16"
                            TextColor="White"
@@ -68,7 +72,6 @@
                                     </Label.GestureRecognizers>
                                 </Label>
 
-                                <!-- 🗑️ Delete Button -->
                                 <Button Text="🗑"
                             Grid.Column="1"
                             BackgroundColor="Transparent"

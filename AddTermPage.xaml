@@ -42,10 +42,13 @@
                     TextColor="White"
                     Clicked="OnAddTermClicked" />
 
-            <Label Text="Clear"
-                   TextColor="Gray"
-                   FontAttributes="Italic"
-                   HorizontalOptions="End" />
+            <Button Text="Clear"
+                    TextColor="Gray"
+                    BackgroundColor="Transparent"
+                    Clicked="OnClearClicked"
+                    HorizontalOptions="End"
+                    Padding="0" />  
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

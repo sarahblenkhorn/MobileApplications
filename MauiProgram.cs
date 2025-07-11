@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Maui.Hosting;
+using Microsoft.Maui.Controls.Hosting;
+using Plugin.LocalNotification;
 using MobileApplicationDev.Services;
 
 namespace MobileApplicationDev
@@ -8,24 +10,24 @@ namespace MobileApplicationDev
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
             builder
-                .UseMauiApp(serviceProvider => new App(serviceProvider))
+                .UseMauiApp<App>()
+                .UseLocalNotification()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-#if DEBUG
-            builder.Logging.AddDebug();
-#endif
-
             builder.Services.AddSingleton<DatabaseService>();
-            builder.Services.AddTransient<MainPage>();
 
             return builder.Build();
         }
     }
 }
+
+
+
 
 
