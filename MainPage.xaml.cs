@@ -1,10 +1,18 @@
 ﻿using Microsoft.Maui.Controls;
 using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
-using Plugin.LocalNotification;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+
+#if ANDROID
+using Android;
+using Android.Content.PM;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
+using Microsoft.Maui.ApplicationModel;
+#endif
+
 
 namespace MobileApplicationDev
 {
@@ -26,51 +34,56 @@ namespace MobileApplicationDev
             base.OnAppearing();
             await LoadTermsAsync();
 
-#if ANDROID || IOS
-            var allTerms = await _db.GetTermsAsync();
+#if ANDROID
+    // Request POST_NOTIFICATIONS permission at runtime if needed
+    if (ContextCompat.CheckSelfPermission(Android.App.Application.Context, Manifest.Permission.PostNotifications) != Permission.Granted)
+    {
+        var activity = Platform.CurrentActivity;
+        ActivityCompat.RequestPermissions(activity, new[] { Manifest.Permission.PostNotifications }, 0);
+    }
 
-            foreach (var term in allTerms)
+    var allTerms = await _db.GetTermsAsync();
+
+    foreach (var term in allTerms)
+    {
+        var courses = await _db.GetCoursesForTermAsync(term.Id);
+
+        foreach (var course in courses)
+        {
+            var now = DateTime.Now;
+
+            if (course.StartDate.Date == now.Date)
             {
-                var courses = await _db.GetCoursesForTermAsync(term.Id);
+                var builder = new AndroidX.Core.App.NotificationCompat.Builder(Android.App.Application.Context, "default")
+                    .SetContentTitle($"Course Starting: {course.CourseTitle}")
+                    .SetContentText($"Your course '{course.CourseTitle}' starts today!")
+                    .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo) // ✅ Uses built-in icon
+                    .SetPriority((int)NotificationCompat.PriorityHigh);
 
-                foreach (var course in courses)
-                {
-                    // Simulate immediate trigger for testing
-                    var now = DateTime.Now;
 
-                    if (course.StartDate.Date == now.Date)
-                    {
-                        var startNotification = new NotificationRequest
-                        {
-                            NotificationId = course.Id + 1000, // Unique ID
-                            Title = $"Course Starting: {course.CourseTitle}",
-                            Description = $"Your course '{course.CourseTitle}' starts today.",
-                            Schedule = new NotificationRequestSchedule
-                            {
-                                NotifyTime = now.AddSeconds(3) // For demo: pop up 3 sec later
-                            }
-                        };
-                        Plugin.LocalNotification.LocalNotificationCenter.Current.Show(startNotification);
-                    }
-
-                    if (course.EndDate.Date == now.Date)
-                    {
-                        var endNotification = new NotificationRequest
-                        {
-                            NotificationId = course.Id + 2000, // Unique ID
-                            Title = $"Course Ending: {course.CourseTitle}",
-                            Description = $"Your course '{course.CourseTitle}' ends today.",
-                            Schedule = new NotificationRequestSchedule
-                            {
-                                NotifyTime = now.AddSeconds(5) // For demo: pop up 5 sec later
-                            }
-                        };
-                        Plugin.LocalNotification.LocalNotificationCenter.Current.Show(endNotification);
-                    }
-                }
+                AndroidX.Core.App.NotificationManagerCompat
+                    .From(Android.App.Application.Context)
+                    .Notify(course.Id + 1000, builder.Build());
             }
+
+            if (course.EndDate.Date == now.Date)
+            {
+                var builder = new AndroidX.Core.App.NotificationCompat.Builder(Android.App.Application.Context, "default")
+                    .SetContentTitle($"Course Ending: {course.CourseTitle}")
+                    .SetContentText($"Your course '{course.CourseTitle}' ends today!")
+                    .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo) // ✅ Uses built-in icon
+                    .SetPriority((int)NotificationCompat.PriorityHigh);
+
+
+                AndroidX.Core.App.NotificationManagerCompat
+                    .From(Android.App.Application.Context)
+                    .Notify(course.Id + 2000, builder.Build());
+            }
+        }
+    }
 #endif
         }
+
 
 
         private async Task LoadTermsAsync()
@@ -150,3 +163,4 @@ namespace MobileApplicationDev
         }
     }
 }
+

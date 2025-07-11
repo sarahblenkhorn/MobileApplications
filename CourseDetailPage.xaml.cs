@@ -5,6 +5,15 @@ using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 
+#if ANDROID
+using Android;
+using Android.Content.PM;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
+using Microsoft.Maui.ApplicationModel;
+#endif
+
+
 namespace MobileApplicationDev
 {
     public partial class CourseDetailPage : ContentPage
@@ -34,9 +43,37 @@ namespace MobileApplicationDev
 
                     // Re-bind the updated course to refresh the UI
                     BindingContext = updatedCourse;
+
+#if ANDROID
+            // Request POST_NOTIFICATIONS permission if needed
+            if (ContextCompat.CheckSelfPermission(Android.App.Application.Context, Manifest.Permission.PostNotifications) != Permission.Granted)
+            {
+                var activity = Platform.CurrentActivity;
+                ActivityCompat.RequestPermissions(activity, new[] { Manifest.Permission.PostNotifications }, 0);
+            }
+
+            var now = DateTime.Now;
+
+            foreach (var assessment in updatedCourse.Assessments)
+            {
+                if (assessment.StartDate.Date == now.Date)
+                {
+                    var builder = new NotificationCompat.Builder(Android.App.Application.Context, "default")
+                        .SetContentTitle($"Assessment Due: {assessment.Title}")
+                        .SetContentText($"Your {assessment.Type} assessment is due today!")
+                        .SetSmallIcon(Android.Resource.Drawable.IcDialogInfo)
+                        .SetPriority(NotificationCompat.PriorityHigh);
+
+                    NotificationManagerCompat
+                        .From(Android.App.Application.Context)
+                        .Notify(assessment.Id + 3000, builder.Build());
+                }
+            }
+#endif
                 }
             }
         }
+
 
         private async void OnShareNotesClicked(object sender, EventArgs e)
         {

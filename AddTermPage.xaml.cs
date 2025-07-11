@@ -98,6 +98,13 @@ public partial class AddTermPage : ContentPage
         courseListLayout.Children.Add(courseFrame);
     }
 
+    private void OnClearClicked(object sender, EventArgs e)
+    {
+        termTitleEntry.Text = string.Empty;
+        termStartDate.Date = DateTime.Today;
+        termEndDate.Date = DateTime.Today;
+    }
+
     private async void OnAddTermClicked(object sender, EventArgs e)
     {
         var term = new Term
