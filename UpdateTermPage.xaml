@@ -7,7 +7,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <!-- Page Title -->
             <Label Text="Update Term"
                    FontSize="24"
                    FontAttributes="Bold"
@@ -26,7 +25,6 @@
             <DatePicker x:Name="termStartDate"
                 Format="MM/dd/yyyy" />
 
-            <!-- Term End Date -->
             <Label Text="Term End Date"
            FontAttributes="Bold" />
             <DatePicker x:Name="termEndDate"
@@ -86,11 +84,9 @@
             </CollectionView>
 
 
-            <!-- Dynamic Course List -->
             <StackLayout x:Name="courseListLayout"
                          Spacing="10" />
 
-            <!-- Save Button -->
             <Button Text="Update Term"
                     BackgroundColor="Black"
                     TextColor="White"
@@ -98,7 +94,6 @@
                     Clicked="OnSaveClicked"
                     Margin="0,20,0,0" />
 
-            <!-- Clear Text -->
             <Label Text="Clear"
                    TextColor="Gray"
                    FontAttributes="Italic"

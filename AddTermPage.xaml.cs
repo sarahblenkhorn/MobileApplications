@@ -1,5 +1,6 @@
 ﻿using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
+using Plugin.LocalNotification;
 
 namespace MobileApplicationDev;
 
@@ -33,19 +34,22 @@ public partial class AddTermPage : ContentPage
         var endDateLabel = new Label { Text = "End Date:", FontAttributes = FontAttributes.Bold };
         var endDatePicker = new DatePicker { Format = "MM/dd/yyyy" };
 
-        // Performance Assessment
+        var courseNotifyLabel = new Label { Text = "Set Course Notifications:", FontAttributes = FontAttributes.Bold };
+        var courseNotifySwitch = new Switch();
+
         var perfLabel = new Label { Text = "Performance Assessment:", FontAttributes = FontAttributes.Bold };
         var perfEntry = new Entry { Placeholder = "Enter title" };
-        var perfDueLabel = new Label { Text = "Due Date:" };
+        var perfDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
         var perfDueDate = new DatePicker { Format = "MM/dd/yyyy" };
 
-        // Objective Assessment
         var objLabel = new Label { Text = "Objective Assessment:", FontAttributes = FontAttributes.Bold };
         var objEntry = new Entry { Placeholder = "Enter title" };
-        var objDueLabel = new Label { Text = "Due Date:" };
+        var objDueLabel = new Label { Text = "Due Date:", FontAttributes = FontAttributes.Bold };
         var objDueDate = new DatePicker { Format = "MM/dd/yyyy" };
 
-        // Instructor Info
+        var assessmentNotifyLabel = new Label { Text = "Set Assessment Notifications:", FontAttributes = FontAttributes.Bold };
+        var assessmentNotifySwitch = new Switch();
+
         var instructorNameLabel = new Label { Text = "Instructor Name:", FontAttributes = FontAttributes.Bold };
         var instructorNameEntry = new Entry { Placeholder = "Enter name" };
 
@@ -75,8 +79,10 @@ public partial class AddTermPage : ContentPage
                 statusLabel, statusPicker,
                 startDateLabel, startDatePicker,
                 endDateLabel, endDatePicker,
+                courseNotifyLabel, courseNotifySwitch,
                 perfLabel, perfEntry, perfDueLabel, perfDueDate,
                 objLabel, objEntry, objDueLabel, objDueDate,
+                assessmentNotifyLabel, assessmentNotifySwitch,
                 instructorNameLabel, instructorNameEntry,
                 instructorEmailLabel, instructorEmailEntry,
                 instructorPhoneLabel, instructorPhoneEntry,
@@ -127,16 +133,20 @@ public partial class AddTermPage : ContentPage
                 var startDate = (layout.Children[5] as DatePicker)?.Date ?? DateTime.Now;
                 var endDate = (layout.Children[7] as DatePicker)?.Date ?? DateTime.Now;
 
-                var perfTitle = (layout.Children[9] as Entry)?.Text ?? "";
-                var perfDue = (layout.Children[11] as DatePicker)?.Date ?? DateTime.Now;
+                var courseNotifySwitch = layout.Children[9] as Switch;
 
-                var objTitle = (layout.Children[13] as Entry)?.Text ?? "";
-                var objDue = (layout.Children[15] as DatePicker)?.Date ?? DateTime.Now;
+                var perfTitle = (layout.Children[11] as Entry)?.Text ?? "";
+                var perfDue = (layout.Children[13] as DatePicker)?.Date ?? DateTime.Now;
 
-                var instructorNameEntry = layout.Children[17] as Entry;
-                var instructorEmailEntry = layout.Children[19] as Entry;
-                var instructorPhoneEntry = layout.Children[21] as Entry;
-                var notesEditor = layout.Children[23] as Editor;
+                var objTitle = (layout.Children[15] as Entry)?.Text ?? "";
+                var objDue = (layout.Children[17] as DatePicker)?.Date ?? DateTime.Now;
+
+                var assessmentNotifySwitch = layout.Children[19] as Switch;
+
+                var instructorNameEntry = layout.Children[21] as Entry;
+                var instructorEmailEntry = layout.Children[23] as Entry;
+                var instructorPhoneEntry = layout.Children[25] as Entry;
+                var notesEditor = layout.Children[27] as Editor;
 
                 string email = instructorEmailEntry?.Text?.Trim() ?? "";
                 if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
@@ -162,6 +172,8 @@ public partial class AddTermPage : ContentPage
                     InstructorEmail = email,
                     InstructorPhone = phone,
                     Notes = notesEditor?.Text ?? "",
+                    NotifyOnStart = courseNotifySwitch?.IsToggled ?? false,
+                    NotifyOnEnd = courseNotifySwitch?.IsToggled ?? false,
                     TermId = term.Id
                 };
 
@@ -177,6 +189,21 @@ public partial class AddTermPage : ContentPage
                         Type = "Performance",
                         CourseId = course.Id
                     });
+
+                    if (assessmentNotifySwitch?.IsToggled ?? false)
+                    {
+                        await LocalNotificationCenter.Current.Show(new NotificationRequest
+                        {
+                            NotificationId = new Random().Next(3000, 3999),
+                            Title = "Performance Assessment Due",
+                            Description = $"{perfTitle} is due on {perfDue:MMM dd}",
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = perfDue.Date.AddHours(9),
+                                RepeatType = NotificationRepeat.No
+                            }
+                        });
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(objTitle))
@@ -189,6 +216,46 @@ public partial class AddTermPage : ContentPage
                         Type = "Objective",
                         CourseId = course.Id
                     });
+
+                    if (assessmentNotifySwitch?.IsToggled ?? false)
+                    {
+                        await LocalNotificationCenter.Current.Show(new NotificationRequest
+                        {
+                            NotificationId = new Random().Next(4000, 4999),
+                            Title = "Objective Assessment Due",
+                            Description = $"{objTitle} is due on {objDue:MMM dd}",
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = objDue.Date.AddHours(9),
+                                RepeatType = NotificationRepeat.No
+                            }
+                        });
+                    }
+                }
+
+                if (courseNotifySwitch?.IsToggled ?? false)
+                {
+                    await LocalNotificationCenter.Current.Show(new NotificationRequest
+                    {
+                        NotificationId = new Random().Next(1000, 1999),
+                        Title = "Course Starting",
+                        Description = $"Your course '{course.CourseTitle}' starts today.",
+                        Schedule = new NotificationRequestSchedule
+                        {
+                            NotifyTime = course.StartDate.Date.AddHours(9)
+                        }
+                    });
+
+                    await LocalNotificationCenter.Current.Show(new NotificationRequest
+                    {
+                        NotificationId = new Random().Next(2000, 2999),
+                        Title = "Course Ending",
+                        Description = $"Your course '{course.CourseTitle}' ends today.",
+                        Schedule = new NotificationRequestSchedule
+                        {
+                            NotifyTime = course.EndDate.Date.AddHours(9)
+                        }
+                    });
                 }
             }
         }
@@ -197,3 +264,5 @@ public partial class AddTermPage : ContentPage
         await Navigation.PopAsync();
     }
 }
+
+

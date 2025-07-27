@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileApplicationDev.MainPage"
@@ -111,7 +111,7 @@
                                                 CornerRadius="10"
                                                 Margin="0,5"
                                                 Clicked="OnCourseTapped"
-                                                CommandParameter="{Binding .}" />       
+                                                CommandParameter="{Binding .}" />
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
@@ -126,10 +126,3 @@
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
-
-
-
-
-
-
-

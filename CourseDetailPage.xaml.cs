@@ -32,7 +32,6 @@ namespace MobileApplicationDev
 
             if (BindingContext is Course course)
             {
-                // Re-fetch latest course data from DB
                 var updatedCourse = (await _db.GetCoursesForTermAsync(course.TermId))
                                     .FirstOrDefault(c => c.Id == course.Id);
 
@@ -41,11 +40,9 @@ namespace MobileApplicationDev
                     var assessments = await _db.GetAssessmentsForCourseAsync(updatedCourse.Id);
                     updatedCourse.Assessments = assessments;
 
-                    // Re-bind the updated course to refresh the UI
                     BindingContext = updatedCourse;
 
 #if ANDROID
-            // Request POST_NOTIFICATIONS permission if needed
             if (ContextCompat.CheckSelfPermission(Android.App.Application.Context, Manifest.Permission.PostNotifications) != Permission.Granted)
             {
                 var activity = Platform.CurrentActivity;

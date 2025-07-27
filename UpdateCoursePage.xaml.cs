@@ -1,5 +1,6 @@
 ﻿using MobileApplicationDev.Models;
 using MobileApplicationDev.Services;
+using Plugin.LocalNotification;
 
 namespace MobileApplicationDev;
 
@@ -7,7 +8,6 @@ public partial class UpdateCoursePage : ContentPage
 {
     private readonly DatabaseService _db;
     private readonly Course _course;
-
     private Assessment _performanceAssessment;
     private Assessment _objectiveAssessment;
 
@@ -16,34 +16,102 @@ public partial class UpdateCoursePage : ContentPage
         InitializeComponent();
         _db = db;
         _course = course;
-
         _performanceAssessment = performanceAssessment;
         _objectiveAssessment = objectiveAssessment;
 
-        // Load course data
+        // Populate fields
         courseTitleEntry.Text = _course.CourseTitle;
         startDatePicker.Date = _course.StartDate;
         endDatePicker.Date = _course.EndDate;
 
-        if (performanceAssessment != null)
+        if (_performanceAssessment != null)
         {
-            performanceAssessmentEntry.Text = performanceAssessment.Title;
-            performanceDueDatePicker.Date = performanceAssessment.StartDate;
+            performanceAssessmentEntry.Text = _performanceAssessment.Title;
+            performanceDueDatePicker.Date = _performanceAssessment.StartDate;
         }
 
-        if (objectiveAssessment != null)
+        if (_objectiveAssessment != null)
         {
-            objectiveAssessmentEntry.Text = objectiveAssessment.Title;
-            objectiveDueDatePicker.Date = objectiveAssessment.StartDate;
+            objectiveAssessmentEntry.Text = _objectiveAssessment.Title;
+            objectiveDueDatePicker.Date = _objectiveAssessment.StartDate;
         }
 
         instructorNameEntry.Text = _course.InstructorName;
         instructorEmailEntry.Text = _course.InstructorEmail;
         instructorPhoneEntry.Text = _course.InstructorPhone;
         notesEditor.Text = _course.Notes;
+        statusPicker.ItemsSource = new List<string> { "In Progress", "Completed", "Dropped", "Plan to Take" };
         statusPicker.SelectedItem = _course.CourseStatus;
+
+        courseNotifySwitch.IsToggled = _course.NotifyOnStart;
+        assessmentNotifySwitch.IsToggled = true; // Assume true if any assessment exists
     }
 
+    private async Task ScheduleCourseNotifications()
+    {
+        if (courseNotifySwitch.IsToggled)
+        {
+            await LocalNotificationCenter.Current.Show(new NotificationRequest
+            {
+                NotificationId = _course.Id + 1000,
+                Title = "Course Starting",
+                Description = $"'{_course.CourseTitle}' starts today.",
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = _course.StartDate.Date.AddHours(9),
+                    RepeatType = NotificationRepeat.No
+                }
+            });
+
+            await LocalNotificationCenter.Current.Show(new NotificationRequest
+            {
+                NotificationId = _course.Id + 2000,
+                Title = "Course Ending",
+                Description = $"'{_course.CourseTitle}' ends today.",
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = _course.EndDate.Date.AddHours(9),
+                    RepeatType = NotificationRepeat.No
+                }
+            });
+        }
+    }
+
+    private async Task ScheduleAssessmentNotifications()
+    {
+        if (assessmentNotifySwitch.IsToggled)
+        {
+            if (_performanceAssessment != null)
+            {
+                await LocalNotificationCenter.Current.Show(new NotificationRequest
+                {
+                    NotificationId = _performanceAssessment.Id + 3000,
+                    Title = "Performance Assessment Due",
+                    Description = $"{_performanceAssessment.Title} is due on {_performanceAssessment.StartDate:MMM dd}",
+                    Schedule = new NotificationRequestSchedule
+                    {
+                        NotifyTime = _performanceAssessment.StartDate.Date.AddHours(9),
+                        RepeatType = NotificationRepeat.No
+                    }
+                });
+            }
+
+            if (_objectiveAssessment != null)
+            {
+                await LocalNotificationCenter.Current.Show(new NotificationRequest
+                {
+                    NotificationId = _objectiveAssessment.Id + 4000,
+                    Title = "Objective Assessment Due",
+                    Description = $"{_objectiveAssessment.Title} is due on {_objectiveAssessment.StartDate:MMM dd}",
+                    Schedule = new NotificationRequestSchedule
+                    {
+                        NotifyTime = _objectiveAssessment.StartDate.Date.AddHours(9),
+                        RepeatType = NotificationRepeat.No
+                    }
+                });
+            }
+        }
+    }
 
     private async void OnSaveClicked(object sender, EventArgs e)
     {
@@ -61,7 +129,6 @@ public partial class UpdateCoursePage : ContentPage
             return;
         }
 
-        // Update assessment objects
         if (_performanceAssessment != null)
         {
             _performanceAssessment.Title = performanceAssessmentEntry.Text ?? "";
@@ -76,28 +143,28 @@ public partial class UpdateCoursePage : ContentPage
             await _db.SaveAssessmentAsync(_objectiveAssessment);
         }
 
-        // Update course fields
         _course.CourseTitle = courseTitleEntry.Text ?? "Untitled";
         _course.CourseStatus = statusPicker.SelectedItem?.ToString() ?? "In Progress";
         _course.StartDate = startDatePicker.Date;
         _course.EndDate = endDatePicker.Date;
-
         _course.PerformanceAssessment = _performanceAssessment?.Title ?? "";
         _course.PerformanceDueDate = _performanceAssessment?.StartDate ?? DateTime.MinValue;
-
         _course.ObjectiveAssessment = _objectiveAssessment?.Title ?? "";
         _course.ObjectiveDueDate = _objectiveAssessment?.StartDate ?? DateTime.MinValue;
-
         _course.InstructorName = instructorNameEntry.Text ?? "";
         _course.InstructorEmail = email;
         _course.InstructorPhone = phone;
         _course.Notes = notesEditor.Text ?? "";
+        _course.NotifyOnStart = courseNotifySwitch.IsToggled;
+        _course.NotifyOnEnd = courseNotifySwitch.IsToggled;
 
         await _db.SaveCourseAsync(_course);
+        await ScheduleCourseNotifications();
+        await ScheduleAssessmentNotifications();
+
         await DisplayAlert("Saved", "Course updated successfully.", "OK");
         await Navigation.PopAsync();
     }
-
 
     private async void OnCancelClicked(object sender, EventArgs e)
     {
@@ -108,4 +175,3 @@ public partial class UpdateCoursePage : ContentPage
         }
     }
 }
-

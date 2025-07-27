@@ -10,7 +10,6 @@
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <!-- Course Info -->
             <Label Text="Course Title:" FontAttributes="Bold" />
             <Entry x:Name="courseTitleEntry" Placeholder="Course Title" />
 
@@ -33,19 +32,26 @@
             <Label Text="End Date:" FontAttributes="Bold" />
             <DatePicker x:Name="endDatePicker" Format="MM/dd/yyyy" />
 
-            <!-- Performance Assessment -->
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Set Course Notifications" FontAttributes="Bold" VerticalOptions="Center" />
+                <Switch x:Name="courseNotifySwitch" />
+            </HorizontalStackLayout>
+
             <Label Text="Performance Assessment:" FontAttributes="Bold" />
             <Entry x:Name="performanceAssessmentEntry" Placeholder="Performance Assessment Title" />
             <Label Text="Due Date:" FontAttributes="Bold" />
             <DatePicker x:Name="performanceDueDatePicker" Format="MM/dd/yyyy" />
 
-            <!-- Objective Assessment -->
             <Label Text="Objective Assessment:" FontAttributes="Bold" />
             <Entry x:Name="objectiveAssessmentEntry" Placeholder="Objective Assessment Title" />
             <Label Text="Due Date:" FontAttributes="Bold" />
             <DatePicker x:Name="objectiveDueDatePicker" Format="MM/dd/yyyy" />
 
-            <!-- Instructor Info -->
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Set Assessment Notifications" FontAttributes="Bold" VerticalOptions="Center" />
+                <Switch x:Name="assessmentNotifySwitch" />
+            </HorizontalStackLayout>
+
             <Label Text="Instructor Name:" FontAttributes="Bold" />
             <Entry x:Name="instructorNameEntry" Placeholder="Instructor Name" />
 
@@ -55,11 +61,9 @@
             <Label Text="Instructor Phone:" FontAttributes="Bold" />
             <Entry x:Name="instructorPhoneEntry" Placeholder="Instructor Phone" Keyboard="Telephone" />
 
-            <!-- Notes -->
             <Label Text="Notes:" FontAttributes="Bold" />
             <Editor x:Name="notesEditor" HeightRequest="80" />
 
-            <!-- Buttons -->
             <Button Text="Save Changes"
                     BackgroundColor="Black"
                     TextColor="White"

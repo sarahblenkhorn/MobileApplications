@@ -73,7 +73,6 @@ namespace MobileApplicationDev
                 bool confirm = await DisplayAlert("Delete Course", $"Delete \"{courseToDelete.CourseTitle}\"?", "Yes", "Cancel");
                 if (!confirm) return;
 
-                // Delete assessments first (if needed)
                 var assessments = await _db.GetAssessmentsForCourseAsync(courseToDelete.Id);
                 foreach (var assessment in assessments)
                 {
@@ -82,7 +81,6 @@ namespace MobileApplicationDev
 
                 await _db.DeleteCourseAsync(courseToDelete);
 
-                // Refresh the list
                 var refreshedCourses = await _db.GetCoursesForTermAsync(_term.Id);
                 courseListView.ItemsSource = refreshedCourses;
             }

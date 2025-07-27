@@ -7,60 +7,72 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label Text="Add New Course"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
 
-            <Entry x:Name="courseTitleEntry"
-                   Placeholder="Course Title" />
+                    <Label Text="Course Title:" FontAttributes="Bold" />
+                    <Entry x:Name="courseTitleEntry" Placeholder="Enter course title" />
 
-            <Picker x:Name="statusPicker"
-                    Title="Select Status">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Planned</x:String>
-                        <x:String>In Progress</x:String>
-                        <x:String>Completed</x:String>
-                        <x:String>Dropped</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+                    <Label Text="Course Status:" FontAttributes="Bold" />
+                    <Picker x:Name="statusPicker" Title="Select Status" />
 
-            <Label Text="Start Date:" />
-            <DatePicker x:Name="startDatePicker" />
+                    <Label Text="Start Date:" FontAttributes="Bold" />
+                    <DatePicker x:Name="startDatePicker" />
 
-            <Label Text="End Date:" />
-            <DatePicker x:Name="endDatePicker" />
+                    <Label Text="End Date:" FontAttributes="Bold" />
+                    <DatePicker x:Name="endDatePicker" />
 
-            <Label Text="Performance Assessment:" />
-            <Entry x:Name="performanceTitleEntry" Placeholder="Enter title" />
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Label Text="Set Course Notifications" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Switch x:Name="courseNotifySwitch" />
+                    </HorizontalStackLayout>
 
-            <Label Text="Due Date:" />
-            <DatePicker x:Name="performanceDueDatePicker" />
+                    <Label Text="Performance Assessment:" FontAttributes="Bold" />
+                    <Entry x:Name="performanceTitleEntry" Placeholder="Enter title" />
 
-            <Label Text="Objective Assessment:" />
-            <Entry x:Name="objectiveTitleEntry" Placeholder="Enter title" />
+                    <Label Text="Due Date:" FontAttributes="Bold" />
+                    <DatePicker x:Name="performanceDueDatePicker" />
 
-            <Label Text="Due Date:" />
-            <DatePicker x:Name="objectiveDueDatePicker" />
+                    <Label Text="Objective Assessment:" FontAttributes="Bold" />
+                    <Entry x:Name="objectiveTitleEntry" Placeholder="Enter title" />
 
-            <Label Text="Instructor Name:" />
-            <Entry x:Name="instructorNameEntry" Placeholder="Enter name" />
+                    <Label Text="Due Date:" FontAttributes="Bold" />
+                    <DatePicker x:Name="objectiveDueDatePicker" />
 
-            <Label Text="Instructor Email:" />
-            <Entry x:Name="instructorEmailEntry" Placeholder="Enter email" />
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Label Text="Set Assessment Notifications" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Switch x:Name="assessmentNotifySwitch" />
+                    </HorizontalStackLayout>
 
-            <Label Text="Instructor Phone:" />
-            <Entry x:Name="instructorPhoneEntry" Placeholder="Enter phone" />
+                    <Label Text="Instructor Name:" FontAttributes="Bold" />
+                    <Entry x:Name="instructorNameEntry" Placeholder="Enter name" />
 
-            <Label Text="Notes:" />
-            <Editor x:Name="notesEditor" Placeholder="Optional notes" AutoSize="TextChanges" />
+                    <Label Text="Instructor Email:" FontAttributes="Bold" />
+                    <Entry x:Name="instructorEmailEntry" Placeholder="Enter email" />
 
-            <Button Text="Save Course"
-                    Clicked="OnSaveCourseClicked"
-                    BackgroundColor="Black"
-                    TextColor="White" />
+                    <Label Text="Instructor Phone:" FontAttributes="Bold" />
+                    <Entry x:Name="instructorPhoneEntry" Placeholder="Enter phone" />
+
+                    <Label Text="Notes:" FontAttributes="Bold" />
+                    <Editor x:Name="notesEditor" Placeholder="Optional notes" AutoSize="TextChanges" />
+
+                    <Button Text="Add Class"
+                            Clicked="OnSaveCourseClicked"
+                            BackgroundColor="Black"
+                            TextColor="White"
+                            CornerRadius="10" />
+
+                    <Label Text="Clear"
+                           TextColor="DarkGray"
+                           HorizontalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnClearTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Frame>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
